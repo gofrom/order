@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Человек Кладовщик',
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -19,13 +19,13 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MainPage(title: 'Склад'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class MainPage extends StatefulWidget {
+  MainPage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -39,10 +39,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MainPageState createState() => new _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -65,6 +65,34 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return new Scaffold(
+      drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text('Пупкин Василий'),
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue
+                ),
+              ),
+              ListTile(
+                title: Text('Поступления'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InputPage())
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Реализации'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+      ),
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
@@ -90,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'You have pushed the button this many times:',
+              'Нажми на кнопку:',
             ),
             new Text(
               '$_counter',
@@ -101,9 +129,31 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        tooltip: '+ 1',
         child: new Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class InputPage extends StatefulWidget {
+  InputPage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _InputPageState createState() => new _InputPageState();
+
+}
+
+class _InputPageState extends State<InputPage> {
+
+  @override
+  Widget build(BuildContext context) {
+   return new Scaffold(
+     appBar: new AppBar(
+       title: new Text('Поступления'),
+     ),
+   );
   }
 }

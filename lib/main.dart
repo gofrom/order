@@ -146,13 +146,93 @@ class InputPage extends StatefulWidget {
 
 }
 
+class InputDocument {
+  InputDocument(this.date, this.number, this.ca, this.sum);
+  final String date;
+  final String number;
+  final String ca;
+  final double sum;
+
+  bool selected = false;
+}
+
+class InputDocumentsDataSource extends DataTableSource {
+  final List<InputDocument> _documents = <InputDocument>[
+    InputDocument('12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33 )
+  ];
+
+  int _selectedCount = 0;
+
+  @override
+  DataRow getRow(int index) {
+    assert(index >= 0);
+
+    if (index >= _documents.length) {
+      return null;
+    }
+
+    final InputDocument document = _documents[index];
+
+    return DataRow.byIndex(
+      index: index,
+      selected: document.selected,
+      onSelectChanged: (bool value) {
+        if (document.selected != value) {
+          _selectedCount += value ? 1 : -1;
+          assert(_selectedCount >= 0);
+          document.selected = value;
+          notifyListeners();
+        }
+      },
+      cells: <DataCell>[
+        DataCell(Text('${document.date}')),
+        DataCell(Text('${document.number}')),
+        DataCell(Text('${document.ca}')),
+        DataCell(Text('${document.sum}'))
+      ]
+    );
+
+  }
+
+  @override
+  int get rowCount => _documents.length;
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get selectedRowCount => _selectedCount;
+
+
+}
+
 class _InputPageState extends State<InputPage> {
 
   @override
   Widget build(BuildContext context) {
+
+   InputDocumentsDataSource _InputDocumentsDataSource = InputDocumentsDataSource();
+
    return new Scaffold(
      appBar: new AppBar(
-       title: new Text('Поступления'),
+       title: new Text('Задания на приемку'),
+     ),
+     body: new Center(
+       child: ListView (
+        children: <Widget>[PaginatedDataTable(
+           header: const Text('Документы поступления'),
+           rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+           columns: <DataColumn>[
+             DataColumn(
+               label: const Text('Дата')
+             ),
+             DataColumn(label: const Text('Номер')),
+             DataColumn(label: const Text('Контрагент')),
+             DataColumn(label: const Text('Сумма'), numeric: true)
+           ],
+          source: _InputDocumentsDataSource
+        )]
+       )
      ),
    );
   }

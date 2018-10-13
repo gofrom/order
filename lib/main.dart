@@ -78,10 +78,13 @@ class _MainPageState extends State<MainPage> {
               ListTile(
                 title: Text('Поступления'),
                 onTap: () {
+
+                  Navigator.pop(context);
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => InputPage())
                   );
+
                 },
               ),
               ListTile(
@@ -158,7 +161,9 @@ class InputDocument {
 
 class InputDocumentsDataSource extends DataTableSource {
   final List<InputDocument> _documents = <InputDocument>[
-    InputDocument('12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33 )
+    InputDocument('12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33 ),
+    InputDocument('13/12/2018', '3433', 'ИП Попов Сергей Владимирович', 564.00 ),
+    InputDocument('14/12/2018', '3434', 'ИП Попов Сергей Владимирович', 423.60 )
   ];
 
   int _selectedCount = 0;

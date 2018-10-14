@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 void main() => runApp(new MyApp());
 
@@ -160,13 +163,38 @@ class InputDocument {
 }
 
 class InputDocumentsDataSource extends DataTableSource {
-  final List<InputDocument> _documents = <InputDocument>[
+
+  void addInputDocument(key, value) {
+    print('$key:$value');
+  }
+
+  void loadData() async {
+    String dataURL = "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
+    http.Response response = await http.get(dataURL);
+
+    Map<String, dynamic> data = json.decode(response.body);
+
+    //data.forEach(this.addInputDocument);
+
+    _documents.add( InputDocument( data['date'], data['number'], data['ca'], double.parse( data['sum'] ) ) );
+
+    notifyListeners();
+  }
+
+
+  List<InputDocument> _documents = <InputDocument>[
     InputDocument('12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33 ),
     InputDocument('13/12/2018', '3433', 'ИП Попов Сергей Владимирович', 564.00 ),
     InputDocument('14/12/2018', '3434', 'ИП Попов Сергей Владимирович', 423.60 )
   ];
 
+
+
   int _selectedCount = 0;
+
+  //DataCell dataCell = DataCell(child);
+
+
 
   @override
   DataRow getRow(int index) {
@@ -195,7 +223,9 @@ class InputDocumentsDataSource extends DataTableSource {
         DataCell(Text('${document.ca}')),
         DataCell(Text('${document.sum}'))
       ]
+
     );
+
 
   }
 
@@ -217,6 +247,7 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
 
    InputDocumentsDataSource _InputDocumentsDataSource = InputDocumentsDataSource();
+   _InputDocumentsDataSource.loadData();
 
    return new Scaffold(
      appBar: new AppBar(

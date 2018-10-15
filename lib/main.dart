@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+const String _kAsset0 = 'people/square/trevor.png';
+const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -71,9 +74,15 @@ class _MainPageState extends State<MainPage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Пупкин Василий'),
-              decoration: BoxDecoration(color: Colors.lightBlue),
+            UserAccountsDrawerHeader(
+              accountName: const Text('Гофман Роман'),
+              accountEmail: const Text('roman@gofman.pro'),
+              currentAccountPicture: const CircleAvatar(
+                backgroundImage: AssetImage(
+                  _kAsset0,
+                  package: _kGalleryAssetsPackage,
+                ),
+              ),
             ),
             ListTile(
               title: Text('Поступления'),
@@ -240,9 +249,9 @@ class _InputPageState extends State<InputPage> {
     _inputDocumentsDataSource.loadData();
 
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Задания на приемку'),
-      ),
+//      appBar: new AppBar(
+//        title: new Text('Задания на приемку'),
+//      ),
       body: new Center(
           child: ListView(children: <Widget>[
         PaginatedDataTable(

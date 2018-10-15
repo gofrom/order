@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -69,35 +68,29 @@ class _MainPageState extends State<MainPage> {
     // than having to individually change instances of widgets.
     return new Scaffold(
       drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Пупкин Василий'),
-                decoration: BoxDecoration(
-                  color: Colors.lightBlue
-                ),
-              ),
-              ListTile(
-                title: Text('Поступления'),
-                onTap: () {
-
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => InputPage())
-                  );
-
-                },
-              ),
-              ListTile(
-                title: Text('Реализации'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Пупкин Василий'),
+              decoration: BoxDecoration(color: Colors.lightBlue),
+            ),
+            ListTile(
+              title: Text('Поступления'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => InputPage()));
+              },
+            ),
+            ListTile(
+              title: Text('Реализации'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
       ),
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -149,7 +142,6 @@ class InputPage extends StatefulWidget {
 
   @override
   _InputPageState createState() => new _InputPageState();
-
 }
 
 class InputDocument {
@@ -163,38 +155,39 @@ class InputDocument {
 }
 
 class InputDocumentsDataSource extends DataTableSource {
-
   void addInputDocument(key, value) {
     print('$key:$value');
   }
 
   void loadData() async {
-    String dataURL = "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
+    String dataURL =
+        "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
     http.Response response = await http.get(dataURL);
 
     Map<String, dynamic> data = json.decode(response.body);
 
     //data.forEach(this.addInputDocument);
 
-    _documents.add( InputDocument( data['date'], data['number'], data['ca'], double.parse( data['sum'] ) ) );
+    _documents.add(InputDocument(
+        data['date'], data['number'], data['ca'], double.parse(data['sum'])));
 
     notifyListeners();
   }
 
-
   List<InputDocument> _documents = <InputDocument>[
-    InputDocument('12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33 ),
-    InputDocument('13/12/2018', '3433', 'ИП Попов Сергей Владимирович', 564.00 ),
-    InputDocument('14/12/2018', '3434', 'ИП Попов Сергей Владимирович', 423.60 )
+    InputDocument(
+        '12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33),
+    InputDocument('13/12/2018', '3433', 'ИП Попов Сергей Владимирович', 564.00),
+    InputDocument('14/12/2018', '3434', 'ИП Попов Сергей Владимирович', 423.60)
   ];
-
-
 
   int _selectedCount = 0;
 
   //DataCell dataCell = DataCell(child);
 
-
+  void onTapDataCell(document) {
+    print(document.ca);
+  }
 
   @override
   DataRow getRow(int index) {
@@ -207,26 +200,26 @@ class InputDocumentsDataSource extends DataTableSource {
     final InputDocument document = _documents[index];
 
     return DataRow.byIndex(
-      index: index,
-      selected: document.selected,
-      onSelectChanged: (bool value) {
-        if (document.selected != value) {
-          _selectedCount += value ? 1 : -1;
-          assert(_selectedCount >= 0);
-          document.selected = value;
-          notifyListeners();
-        }
-      },
-      cells: <DataCell>[
-        DataCell(Text('${document.date}')),
-        DataCell(Text('${document.number}')),
-        DataCell(Text('${document.ca}')),
-        DataCell(Text('${document.sum}'))
-      ]
-
-    );
-
-
+        index: index,
+        selected: document.selected,
+        onSelectChanged: (bool value) {
+          if (document.selected != value) {
+            _selectedCount += value ? 1 : -1;
+            assert(_selectedCount >= 0);
+            document.selected = value;
+            notifyListeners();
+          }
+        },
+        cells: <DataCell>[
+          DataCell(Text('${document.date}'), onTap: () {
+            print(document.date);
+          }),
+          DataCell(Text('${document.number}'), onTap: () {
+            print(document.number);
+          }),
+          DataCell(Text('${document.ca}')),
+          DataCell(Text('${document.sum}'))
+        ]);
   }
 
   @override
@@ -237,39 +230,32 @@ class InputDocumentsDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => _selectedCount;
-
-
 }
 
 class _InputPageState extends State<InputPage> {
-
   @override
   Widget build(BuildContext context) {
+    InputDocumentsDataSource _inputDocumentsDataSource =
+        InputDocumentsDataSource();
+    _inputDocumentsDataSource.loadData();
 
-   InputDocumentsDataSource _InputDocumentsDataSource = InputDocumentsDataSource();
-   _InputDocumentsDataSource.loadData();
-
-   return new Scaffold(
-     appBar: new AppBar(
-       title: new Text('Задания на приемку'),
-     ),
-     body: new Center(
-       child: ListView (
-        children: <Widget>[PaginatedDataTable(
-           header: const Text('Документы поступления'),
-           rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
-           columns: <DataColumn>[
-             DataColumn(
-               label: const Text('Дата')
-             ),
-             DataColumn(label: const Text('Номер')),
-             DataColumn(label: const Text('Контрагент')),
-             DataColumn(label: const Text('Сумма'), numeric: true)
-           ],
-          source: _InputDocumentsDataSource
-        )]
-       )
-     ),
-   );
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Задания на приемку'),
+      ),
+      body: new Center(
+          child: ListView(children: <Widget>[
+        PaginatedDataTable(
+            header: const Text('Документы поступления'),
+            rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+            columns: <DataColumn>[
+              DataColumn(label: const Text('Дата')),
+              DataColumn(label: const Text('Номер')),
+              DataColumn(label: const Text('Контрагент')),
+              DataColumn(label: const Text('Сумма'), numeric: true)
+            ],
+            source: _inputDocumentsDataSource)
+      ])),
+    );
   }
 }

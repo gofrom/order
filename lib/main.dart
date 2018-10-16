@@ -170,17 +170,43 @@ class InputDocumentsDataSource extends DataTableSource {
 
   void loadData() async {
     String dataURL =
-        "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
-    http.Response response = await http.get(dataURL);
+        "http://192.168.10.2:8080/utapr/hs/mce/%D0%9E%D1%82%D1%87%D0%B5%D1%82?Report=001&BeginDate=20180801000000";
 
-    Map<String, dynamic> data = json.decode(response.body);
+    //    "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
+
+//    var client = new http.Client();
+//    client.post(dataURL, headers: {
+//      "Authorization": "Basic c2VydmljZTpzZXJ2aWNl"
+//    }, body: {
+//      "Report": "001",
+//      "BeginDate": "20180801000000",
+//      "EndDate": "20180801235959"
+//    }).then((response) => print(response.body));
+
+//    print("GH1" + dataURL);
+//    http.Response response = await http.post(dataURL, headers: {
+//      "Authorization": "Basic c2VydmljZTpzZXJ2aWNl"
+//    }, body: {
+//      "Report": "001",
+//      "BeginDate": "20180801000000",
+//      "EndDate": "20180801235959"
+//    });
+
+    http.Response response = await http.get(dataURL, headers: {
+      "Authorization": "Basic c2VydmljZTpzZXJ2aWNl"
+    }); // "Content-type": "application/x-www-form-urlencoded",
+
+    //"Период": {"Начало": "20180801000000", "Окончание": "20180801235959"}
+    print(response.body);
+
+    //Map<String, dynamic> data = json.decode(response.body);
 
     //data.forEach(this.addInputDocument);
 
-    _documents.add(InputDocument(
+    /* _documents.add(InputDocument(
         data['date'], data['number'], data['ca'], double.parse(data['sum'])));
 
-    notifyListeners();
+    notifyListeners();*/
   }
 
   List<InputDocument> _documents = <InputDocument>[

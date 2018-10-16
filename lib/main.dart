@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'sell.dart';
 
 const String _kAsset0 = 'people/square/trevor.png';
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
@@ -96,6 +97,8 @@ class _MainPageState extends State<MainPage> {
               title: Text('Реализации'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SellPage()));
               },
             )
           ],

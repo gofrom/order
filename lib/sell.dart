@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SellDocument {
-
-  SellDocument(this.date, this.number, this.ca, this.sum);
+  SellDocument(this.active, this.date, this.number, this.sum, this.ca,
+      this.manager, this.mobileAgent, this.deleted, this.exp);
 
   bool active;
-  String manager;
   String date;
   String number;
   double sum;
   String ca;
+  String manager;
   bool mobileAgent;
   bool deleted;
   String exp;
@@ -19,7 +20,6 @@ class SellDocument {
 }
 
 class SellDocumentsDataSource extends DataTableSource {
-
   void loadData() async {
     String dataURL =
         "http://192.168.10.2:8080/utapr/hs/mce/%D0%9E%D1%82%D1%87%D0%B5%D1%82?Report=001&BeginDate=20180801000000";
@@ -44,34 +44,45 @@ class SellDocumentsDataSource extends DataTableSource {
 //      "EndDate": "20180801235959"
 //    });
 
-    http.Response response = await http.get(dataURL, headers: {
-      "Authorization": "Basic c2VydmljZTpzZXJ2aWNl"
-    }); // "Content-type": "application/x-www-form-urlencoded",
+    http.Response response = await http
+        .get(dataURL, headers: {"Authorization": "Basic c2VydmljZTpzZXJ2aWNl"});
 
     //"Период": {"Начало": "20180801000000", "Окончание": "20180801235959"}
     print(response.body);
 
     //Map<String, dynamic> data = json.decode(response.body);
+    List<dynamic> data = json.decode(response.body);
 
+    for (Map<String, dynamic> Element in data) {
+//      SellDocument(this.active, this.date, this.number, this.sum, this.ca,
+//          this.manager, this.mobileAgent, this.deleted, this.exp);
+
+      _documents.add(SellDocument(
+          Element['Проведен'],
+          Element['ДатаДокумента'],
+          Element['НомерДокумента'],
+          double.parse(Element['СуммаДокумента'].toString()),
+          Element['Клиент'],
+          Element['Менеджер'],
+          Element['МобильныйАгент'],
+          Element['ПометкаУдаления'],
+          Element['Экспедитор']));
+    }
     //data.forEach(this.addInputDocument);
 
     /* _documents.add(InputDocument(
         data['date'], data['number'], data['ca'], double.parse(data['sum'])));
-
-    notifyListeners();*/
+    */
+    notifyListeners();
   }
 
   List<SellDocument> _documents = <SellDocument>[
-    SellDocument(
-        '12/12/2018', '3432', 'ИП Попов Сергей Владимирович', 5643.33),
-    SellDocument('13/12/2018', '3433', 'ИП Попов Сергей Владимирович', 564.00),
-    SellDocument('14/12/2018', '3434', 'ИП Попов Сергей Владимирович', 423.60)
+    SellDocument(false, "", "", 0.00, "", "", false, false, "")
   ];
 
   int _selectedCount = 0;
 
   //DataCell dataCell = DataCell(child);
-
 
   @override
   DataRow getRow(int index) {
@@ -95,6 +106,8 @@ class SellDocumentsDataSource extends DataTableSource {
           }
         },
         cells: <DataCell>[
+          DataCell(Text('${document.active}')),
+          DataCell(Text('${document.deleted}')),
           DataCell(Text('${document.date}'), onTap: () {
             print(document.date);
           }),
@@ -102,7 +115,10 @@ class SellDocumentsDataSource extends DataTableSource {
             print(document.number);
           }),
           DataCell(Text('${document.ca}')),
-          DataCell(Text('${document.sum}'))
+          DataCell(Text('${document.sum}')),
+          DataCell(Text('${document.mobileAgent}')),
+          DataCell(Text('${document.manager}')),
+          DataCell(Text('${document.exp}')),
         ]);
   }
 
@@ -116,38 +132,50 @@ class SellDocumentsDataSource extends DataTableSource {
   int get selectedRowCount => _selectedCount;
 }
 
-class sellPage extends StatefulWidget {
-  sellPage({Key key, this.title}) : super(key: key);
+class SellPage extends StatefulWidget {
+  SellPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _sellPageState createState() => new _sellPageState();
+  _SellPageState createState() => new _SellPageState();
 }
 
-class _sellPageState extends State<sellPage> {
+class _SellPageState extends State<SellPage> {
   @override
   Widget build(BuildContext context) {
-    SellDocumentsDataSource _inputDocumentsDataSource = SellDocumentsDataSource();
-    _inputDocumentsDataSource.loadData();
+    SellDocumentsDataSource _sellDocumentsDataSource =
+        SellDocumentsDataSource();
+    _sellDocumentsDataSource.loadData();
 
     return new Scaffold(
 //      appBar: new AppBar(
-//        title: new Text('Задания на приемку'),
+//        title: new Text(''),
 //      ),
       body: new Center(
           child: ListView(children: <Widget>[
-            PaginatedDataTable(
-                header: const Text('Документы поступления'),
-                rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
-                columns: <DataColumn>[
-                  DataColumn(label: const Text('Дата')),
-                  DataColumn(label: const Text('Номер')),
-                  DataColumn(label: const Text('Контрагент')),
-                  DataColumn(label: const Text('Сумма'), numeric: true)
-                ],
-                source: _inputDocumentsDataSource)
-          ])),
+        PaginatedDataTable(
+            header: const Text('Документы реализации'),
+            rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+            columns: <DataColumn>[
+              DataColumn(label: const Text('Проведен')),
+              DataColumn(label: const Text('Удален')),
+              DataColumn(label: const Text('Дата')),
+              DataColumn(label: const Text('Номер')),
+              DataColumn(
+                  label: const Text(
+                'Клиент',
+                maxLines: 2,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+              )),
+              DataColumn(label: const Text('Сумма'), numeric: true),
+              DataColumn(label: const Text('МобильныйАгент')),
+              DataColumn(label: const Text('Менеджер')),
+              DataColumn(label: const Text('Экспедитор'))
+            ],
+            source: _sellDocumentsDataSource)
+      ])),
     );
   }
 }

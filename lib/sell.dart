@@ -54,9 +54,6 @@ class SellDocumentsDataSource extends DataTableSource {
     List<dynamic> data = json.decode(response.body);
 
     for (Map<String, dynamic> Element in data) {
-//      SellDocument(this.active, this.date, this.number, this.sum, this.ca,
-//          this.manager, this.mobileAgent, this.deleted, this.exp);
-
       _documents.add(SellDocument(
           Element['Проведен'],
           Element['ДатаДокумента'],
@@ -68,17 +65,11 @@ class SellDocumentsDataSource extends DataTableSource {
           Element['ПометкаУдаления'],
           Element['Экспедитор']));
     }
-    //data.forEach(this.addInputDocument);
 
-    /* _documents.add(InputDocument(
-        data['date'], data['number'], data['ca'], double.parse(data['sum'])));
-    */
     notifyListeners();
   }
 
-  List<SellDocument> _documents = <SellDocument>[
-    SellDocument(false, "", "", 0.00, "", "", false, false, "")
-  ];
+  List<SellDocument> _documents = <SellDocument>[];
 
   int _selectedCount = 0;
 

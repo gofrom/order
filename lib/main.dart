@@ -78,12 +78,22 @@ class _MainPageState extends State<MainPage> {
             UserAccountsDrawerHeader(
               accountName: const Text('Гофман Роман'),
               accountEmail: const Text('roman@gofman.pro'),
+              onDetailsPressed: () {
+                 print("qw");
+//                 _showDrawerContents = !_showDrawerContents;
+//                 if (_showDrawerContents)
+//                   _controller.reverse();
+//                 else
+//                   _controller.forward();
+
+              },
               currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage(
                   _kAsset0,
                   package: _kGalleryAssetsPackage,
                 ),
               ),
+
             ),
             ListTile(
               title: Text('Поступления'),

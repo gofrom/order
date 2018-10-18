@@ -79,13 +79,12 @@ class _MainPageState extends State<MainPage> {
               accountName: const Text('Гофман Роман'),
               accountEmail: const Text('roman@gofman.pro'),
               onDetailsPressed: () {
-                 print("qw");
+                print("qw");
 //                 _showDrawerContents = !_showDrawerContents;
 //                 if (_showDrawerContents)
 //                   _controller.reverse();
 //                 else
 //                   _controller.forward();
-
               },
               currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage(
@@ -93,7 +92,6 @@ class _MainPageState extends State<MainPage> {
                   package: _kGalleryAssetsPackage,
                 ),
               ),
-
             ),
             ListTile(
               title: Text('Поступления'),
@@ -110,7 +108,7 @@ class _MainPageState extends State<MainPage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SellPage()));
               },
-            )
+            ),
           ],
         ),
       ),

@@ -97,7 +97,7 @@ class SellDocumentsDataSource extends DataTableSource {
           }
         },
         cells: <DataCell>[
-          DataCell(Text('${document.active}')),
+          DataCell( Checkbox(value: document.active, onChanged: null) ),
           DataCell(Text('${document.deleted}')),
           DataCell(Text('${document.date}'), onTap: () {
             print(document.date);

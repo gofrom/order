@@ -97,26 +97,47 @@ class SellDocumentsDataSource extends DataTableSource {
           }
         },
         cells: <DataCell>[
-          DataCell(Checkbox(value: document.active, onChanged: null)),
-          DataCell(Checkbox(value: document.deleted, onChanged: null)),
-          DataCell(Text('${document.date}'), onTap: () {
-            print(document.date);
-          }),
-          DataCell(Text('${document.number}'), onTap: () {
-            print(document.number);
-          }),
-          DataCell(Container(
-            child: Column(children: <Widget>[
-              Text('${document.ca}',
-                  softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis)
-            ]),
-            width: 300.0,
-          )),
-          DataCell(Text('${document.sum}')),
-          DataCell(Checkbox(value: document.mobileAgent, onChanged: null)),
-          DataCell(Text('${document.manager}')),
-          DataCell(Text('${document.exp}')),
-        ]);
+          DataCell(
+              Container(
+                  child: Checkbox(
+                      value: document.active,
+                      onChanged: null
+                  ),
+                color: Colors.black12,
+              ),
+
+          ),
+          DataCell(
+            Container(
+                child: Checkbox(
+                  value: document.deleted,
+                  onChanged: null
+                ),
+      color: Colors.black26 ,
+      )
+    ),
+    DataCell(Text('${document.date}'), onTap: () {
+    print(document.date);
+    }),
+    DataCell(Text('${document.number}'), onTap: () {
+    print(document.number);
+    }),
+    DataCell(
+    Container(
+    child: Text(
+    '${document.ca}',
+    softWrap: true,
+    maxLines: 2,
+    overflow: TextOverflow.ellipsis
+    ),
+    width: 300.0,
+    ),
+    ),
+    DataCell(Text('${document.sum}')),
+    DataCell(Checkbox(value: document.mobileAgent, onChanged: null)),
+    DataCell(Text('${document.manager}')),
+    DataCell(Text('${document.exp}')),
+    ]);
   }
 
   @override
@@ -142,7 +163,7 @@ class _SellPageState extends State<SellPage> {
   @override
   Widget build(BuildContext context) {
     SellDocumentsDataSource _sellDocumentsDataSource =
-        SellDocumentsDataSource();
+    SellDocumentsDataSource();
     _sellDocumentsDataSource.loadData();
 
     return new Scaffold(
@@ -151,11 +172,11 @@ class _SellPageState extends State<SellPage> {
 //      ),
       body: new Center(
           child: ListView(children: <Widget>[
-        PaginatedDataTable(
-            header: const Text('Документы реализации'),
-            rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
-            columns: <DataColumn>[
-              DataColumn(label: const Text('Проведен')),
+            PaginatedDataTable(
+                header: const Text('Документы реализации'),
+                rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+                columns: <DataColumn>[
+                  DataColumn(label: const Text('Проведен')),
               DataColumn(label: const Text('Удален')),
               DataColumn(label: const Text('Дата')),
               DataColumn(label: const Text('Номер')),

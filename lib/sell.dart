@@ -97,17 +97,26 @@ class SellDocumentsDataSource extends DataTableSource {
           }
         },
         cells: <DataCell>[
-          DataCell( Checkbox(value: document.active, onChanged: null) ),
-          DataCell(Text('${document.deleted}')),
+          DataCell(Checkbox(value: document.active, onChanged: null)),
+          DataCell(Checkbox(value: document.deleted, onChanged: null)),
           DataCell(Text('${document.date}'), onTap: () {
             print(document.date);
           }),
           DataCell(Text('${document.number}'), onTap: () {
             print(document.number);
           }),
-          DataCell(Text('${document.ca}')),
+          DataCell(Container(
+              child: Column(children: <Widget>[
+                new SizedBox(height: 8.0),
+                Text('${document.ca}',
+                    softWrap: true,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis)
+              ]),
+              width: 300.0,
+              height: 50.0)),
           DataCell(Text('${document.sum}')),
-          DataCell(Text('${document.mobileAgent}')),
+          DataCell(Checkbox(value: document.mobileAgent, onChanged: null)),
           DataCell(Text('${document.manager}')),
           DataCell(Text('${document.exp}')),
         ]);

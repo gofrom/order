@@ -106,15 +106,12 @@ class SellDocumentsDataSource extends DataTableSource {
             print(document.number);
           }),
           DataCell(Container(
-              child: Column(children: <Widget>[
-                new SizedBox(height: 8.0),
-                Text('${document.ca}',
-                    softWrap: true,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis)
-              ]),
-              width: 300.0,
-              height: 50.0)),
+            child: Column(children: <Widget>[
+              Text('${document.ca}',
+                  softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis)
+            ]),
+            width: 300.0,
+          )),
           DataCell(Text('${document.sum}')),
           DataCell(Checkbox(value: document.mobileAgent, onChanged: null)),
           DataCell(Text('${document.manager}')),

@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'sell.dart';
 
 const String _kAsset0 = 'people/square/trevor.png';
+const String _kAsset1 = 'people/square/stella.png';
+const String _kAsset2 = 'people/square/sandra.png';
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
 
 void main() => runApp(new MyApp());
@@ -48,8 +50,9 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => new _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   int _counter = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _incrementCounter() {
     setState(() {
@@ -62,6 +65,45 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void _showNotImplementedMessage() {
+    Navigator.pop(context); // Dismiss the drawer.
+    _scaffoldKey.currentState.showSnackBar(const SnackBar(
+        content: Text("The drawer's items don't do anything")
+    ));
+  }
+
+  static final Animatable<Offset> _drawerDetailsTween = Tween<Offset>(
+    begin: const Offset(0.0, -1.0),
+    end: Offset.zero,
+  ).chain(CurveTween(
+    curve: Curves.fastOutSlowIn,
+  ));
+
+  AnimationController _controller;
+  Animation<double> _drawerContentsOpacity;
+  Animation<Offset> _drawerDetailsPosition;
+  bool _showDrawerContents = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 200)
+    );
+    _drawerContentsOpacity = CurvedAnimation(
+      parent: ReverseAnimation(_controller),
+      curve: Curves.fastOutSlowIn,
+    );
+    _drawerDetailsPosition = _controller.drive(_drawerDetailsTween);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -71,20 +113,20 @@ class _MainPageState extends State<MainPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return new Scaffold(
+      key: _scaffoldKey,
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: <Widget>[
             UserAccountsDrawerHeader(
               accountName: const Text('Гофман Роман'),
               accountEmail: const Text('roman@gofman.pro'),
               onDetailsPressed: () {
                 print("qw");
-//                 _showDrawerContents = !_showDrawerContents;
-//                 if (_showDrawerContents)
-//                   _controller.reverse();
-//                 else
-//                   _controller.forward();
+                 _showDrawerContents = !_showDrawerContents;
+                 if (_showDrawerContents)
+                   _controller.reverse();
+                 else
+                   _controller.forward();
               },
               currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage(
@@ -92,23 +134,104 @@ class _MainPageState extends State<MainPage> {
                   package: _kGalleryAssetsPackage,
                 ),
               ),
+              otherAccountsPictures: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    _onOtherAccountsTap(context);
+                  },
+                  child: Semantics(
+                    label: 'Switch to Account B',
+                    child: const CircleAvatar(
+                      backgroundImage: AssetImage(
+                        _kAsset1,
+                        package: _kGalleryAssetsPackage,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _onOtherAccountsTap(context);
+                  },
+                  child: Semantics(
+                    label: 'Switch to Account C',
+                    child: const CircleAvatar(
+                      backgroundImage: AssetImage(
+                        _kAsset2,
+                        package: _kGalleryAssetsPackage,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              title: Text('Поступления'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => InputPage()));
-              },
+            MediaQuery.removePadding(
+              context: context,
+              // DrawerHeader consumes top MediaQuery padding.
+              removeTop: true,
+              child: Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        // The initial contents of the drawer.
+                        FadeTransition(
+                          opacity: _drawerContentsOpacity,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text('Поступления'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => InputPage()));
+                                },
+                              ),
+                              ListTile(
+                                title: Text('Реализации'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => SellPage()));
+                                },
+                              ),
+                            ]
+
+                          ),
+                        ),
+                        // The drawer's "details" view.
+                        SlideTransition(
+                          position: _drawerDetailsPosition,
+                          child: FadeTransition(
+                            opacity: ReverseAnimation(_drawerContentsOpacity),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: const Icon(Icons.add),
+                                  title: const Text('Add account'),
+                                  onTap: _showNotImplementedMessage,
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.settings),
+                                  title: const Text('Manage accounts'),
+                                  onTap: _showNotImplementedMessage,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            ListTile(
-              title: Text('Реализации'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SellPage()));
-              },
-            ),
+
           ],
         ),
       ),
@@ -116,6 +239,7 @@ class _MainPageState extends State<MainPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: new Text(widget.title),
+
       ),
       body: new Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -151,6 +275,24 @@ class _MainPageState extends State<MainPage> {
         tooltip: '+ 1',
         child: new Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+  void _onOtherAccountsTap(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Account switching not implemented.'),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

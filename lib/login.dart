@@ -18,7 +18,13 @@ class _LoginPageState extends State<LoginPage> {
 //      appBar: new AppBar(
 //        title: new Text(''),
 //      ),
-      body: new Center(child: ListView(children: <Widget>[])),
+      body: Center(
+          child: ListView(
+              children: <Widget>[
+
+              ]
+          )
+      ),
     );
   }
 }

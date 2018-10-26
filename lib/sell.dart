@@ -22,7 +22,7 @@ class SellDocument {
 class SellDocumentsDataSource extends DataTableSource {
   void loadData() async {
     String dataURL =
-        "http://192.168.10.2:8080/utapr/hs/mce/%D0%9E%D1%82%D1%87%D0%B5%D1%82?Report=001&BeginDate=20180801000000";
+        "http://213.138.76.82:14883/utapr/hs/mce/%D0%9E%D1%82%D1%87%D0%B5%D1%82?Report=001&BeginDate=20180801000000";
 
     //    "http://echo.jsontest.com/date/12-12-2018/number/3459/ca/IPBabayan/sum/5273.50";
 
@@ -103,7 +103,7 @@ class SellDocumentsDataSource extends DataTableSource {
                       value: document.active,
                       onChanged: null
                   ),
-                color: Colors.black12,
+                //color: Colors.black12,
               ),
 
           ),
@@ -113,7 +113,7 @@ class SellDocumentsDataSource extends DataTableSource {
                   value: document.deleted,
                   onChanged: null
                 ),
-      color: Colors.black26 ,
+      //color: Colors.black26 ,
       )
     ),
     DataCell(Text('${document.date}'), onTap: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'sell.dart';
+import 'package:order/login.dart';
 
 const String _kAsset0 = 'people/square/trevor.png';
 const String _kAsset1 = 'people/square/stella.png';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Человек Кладовщик',
+      title: 'Человек-кладовщик',
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -26,8 +27,15 @@ class MyApp extends StatelessWidget {
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
+
       ),
-      home: new MainPage(title: 'Склад'),
+      //home: new MainPage(title: 'Склад'),
+      initialRoute: '/',
+      routes: {
+        '/': (BuildContext context) => MainPage(),
+        '/login': (BuildContext context) => LoginPage()
+      },
+
     );
   }
 }
@@ -214,7 +222,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 ListTile(
                                   leading: const Icon(Icons.add),
                                   title: const Text('Add account'),
-                                  onTap: _showNotImplementedMessage,
+                                  onTap: (){
+                                    Navigator.pushNamed(context, '/login');
+                                  }
                                 ),
                                 ListTile(
                                   leading: const Icon(Icons.settings),
@@ -238,7 +248,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: new Text(widget.title),
+        title: new Text("123"),
 
       ),
       body: new Center(
